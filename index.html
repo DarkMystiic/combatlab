@@ -157,6 +157,20 @@
   td { color: var(--muted); }
   td.yes { color: var(--bone); font-weight: 600; }
   td.yes::before { content: "✓"; color: var(--fight); font-weight: 800; margin-right: 8px; }
+  .plans { display: none; }
+  .plan-card { border: 1px solid var(--rope); border-radius: 18px; padding: 20px; }
+  .plan-card.pro { background: var(--canvas); box-shadow: inset 0 4px 0 var(--amber); }
+  .plan-card h3 { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; margin: 0; }
+  .plan-card .plan { font: italic 900 30px var(--display); }
+  .plan-card .price { font-size: 17px; font-weight: 600; }
+  .plan-card .alt { margin: 4px 0 0; color: var(--muted); font-size: 14px; }
+  .plan-card ul { list-style: none; margin: 14px 0 0; padding: 0; }
+  .plan-card li { padding: 6px 0; color: #C9CED8; font-size: 16px; }
+  .plan-card li::before { content: "✓"; color: var(--fight); font-weight: 800; margin-right: 10px; }
+  @media (max-width: 700px) {
+    .table-wrap { display: none; }
+    .plans { display: grid; gap: 14px; }
+  }
   .fine { font-size: 14px; color: var(--dim); margin: 20px 0 0; }
 
   /* footer */
@@ -229,10 +243,10 @@
           </div>
           <span class="phase" id="phase">READY</span>
         </div>
-        <div class="time shout" id="time">0:45</div>
+        <div class="time shout" id="time">0:15</div>
         <div class="call" id="call" aria-live="polite">
           <div class="call-num shout" id="callNum">1-2-3</div>
-          <p class="call-said" id="callSaid">Press play and your coach starts the round.</p>
+          <p class="call-said" id="callSaid">Beginner: jab, cross, lead hook</p>
         </div>
         <div class="clock-foot">
           <div class="rounds" aria-label="Round 1 of 3"><i class="on"></i><i></i><i></i></div>
@@ -364,6 +378,22 @@
           </tbody>
         </table>
       </div>
+      <div class="plans">
+        <div class="plan-card">
+          <h3><span class="plan">Free</span><span class="price">$0</span></h3>
+          <ul><li>Freestyle rounds at Beginner level</li><li>All 4 coach voices</li><li>Browse the combo library</li></ul>
+        </div>
+        <div class="plan-card pro">
+          <h3><span class="plan">Pro</span><span class="price">$12.99 a month</span></h3>
+          <p class="alt">or $129 a year (7-day free trial), or $249 once</p>
+          <ul><li>All 5 levels</li><li>Every Boxing and Muay Thai workout</li><li>Hear every combo in the library</li><li>Write your own combos</li><li>Full training history and heatmap</li></ul>
+        </div>
+        <div class="plan-card">
+          <h3><span class="plan">Gym</span><span class="price">$29.99 a month</span></h3>
+          <p class="alt">per gym</p>
+          <ul><li>Class Mode on the gym TV</li><li>Stations, presets and coach controls</li><li>Everything in Pro</li></ul>
+        </div>
+      </div>
       <p class="fine">Prices in US dollars. You pay through the App Store or Google Play and can cancel anytime in your store settings.</p>
     </div>
   </section>
@@ -387,38 +417,23 @@
 <script>
 (() => {
   // Sample round: same phase colours as the app (prep, fight, last 10 s, rest), shortened for the web.
+  // Free taste: the same two combos every time (one Beginner, one Pro), one 15 s round, then it stops.
   const COMBOS = {
     bx: [
-      ['1-2-3', 'Jab, cross, lead hook', 'bx_jab_cross_lhook'],
-      ['1-1-2', 'Jab, jab, cross', 'bx_jab_jab_cross'],
-      ['Slip 2-3', 'Slip, cross, lead hook', 'bx_slip_cross_lhook'],
-      ['1-2-3b', 'Jab, cross, hook to the body', 'bx_jab_cross_blhook'],
-      ['6-3-2', 'Rear uppercut, lead hook, cross', 'bx_rupper_lhook_cross'],
-      ['1-2-3-4', 'Jab, cross, lead hook, rear hook', 'bx_jab_cross_lhook_rhook'],
-      ['1-2, pivot', 'Jab, cross, pivot out', 'bx_jab_cross_pivot'],
-      ['Pull 2-3', 'Pull back, cross, lead hook', 'bx_pull_cross_lhook'],
+      ['1-2-3', 'Beginner: jab, cross, lead hook', 'bx_jab_cross_lhook'],
+      ['Slip 2, roll 3-2', 'Pro: slip, cross, roll, lead hook, cross', 'bx_slip_cross_roll_lhook_cross'],
     ],
     mt: [
-      ['Dutch', 'Jab, cross, lead hook, rear low kick', 'mt_jab_cross_lhook_rlow'],
-      ['1-2, kick', 'Jab, cross, rear kick', 'mt_jab_cross_rkick'],
-      ['Check, kick', 'Check, rear kick', 'mt_check_rkick'],
-      ['Jab, knee', 'Jab, rear knee', 'mt_jab_rknee'],
-      ['2-3, kick', 'Cross, lead hook, rear kick', 'mt_cross_lhook_rkick'],
-      ['Clinch, knees', 'Clinch, rear knee, switch knee', 'mt_clinch_rknee_lknee'],
-      ['Feint, kick', 'Feint, rear kick', 'mt_feint_rkick'],
-      ['1-2, elbows', 'Jab, cross, lead elbow, rear elbow', 'mt_jab_cross_lelbow_relbow'],
+      ['1-2, kick', 'Beginner: jab, cross, rear kick', 'mt_jab_cross_rkick'],
+      ['Catch and punish', 'Pro: catch the kick, rear low kick, cross, lead hook, rear kick', 'mt_catch_rlow_cross_lhook_rkick'],
     ],
   };
-  const PHASES = [
-    { name: 'GET SET', secs: 5, color: 'var(--prep)' },
-    { name: 'FIGHT', secs: 45, color: 'var(--fight)' },
-    { name: 'REST', secs: 15, color: 'var(--rest)' },
-  ];
-  const CALL_EVERY = 5;
+  const PREP = 3, FIGHT = 15, WARN = 5;
+  const CALL_AT = [13, 7]; // seconds left on the clock when each combo is called
   const $ = (id) => document.getElementById(id);
   const clock = $('clock'), time = $('time'), phaseEl = $('phase'), call = $('call');
   const voice = new Audio();
-  let style = 'bx', running = false, timer = null, phase = 0, left = 0, sinceCall = 0, deck = [];
+  let style = 'bx', running = false, timer = null, fighting = false, left = 0;
 
   const fmt = (s) => `${Math.floor(s / 60)}:${String(s % 60).padStart(2, '0')}`;
   const setPhaseColor = (c) => clock.style.setProperty('--phase', c);
@@ -429,58 +444,64 @@
     call.classList.remove('hit'); void call.offsetWidth; call.classList.add('hit');
     if (speak) { voice.src = `assets/voice/${clip}.mp3`; voice.play().catch(() => {}); }
   }
-  function nextCombo() {
-    if (!deck.length) deck = [...COMBOS[style]].sort(() => Math.random() - 0.5);
-    showCombo(deck.pop(), true);
-  }
-  function enter(i) {
-    phase = i; left = PHASES[i].secs; sinceCall = CALL_EVERY - 1;
-    phaseEl.textContent = PHASES[i].name;
-    setPhaseColor(PHASES[i].color);
-    if (PHASES[i].name === 'FIGHT') $('bellStart').play().catch(() => {});
-    if (PHASES[i].name === 'REST') {
-      $('bellEnd').play().catch(() => {});
-      $('callNum').textContent = 'Breathe';
-      $('callSaid').textContent = 'Shake out your arms. Next round soon.';
-    }
-    time.textContent = fmt(left);
+  function setButtons(on) {
+    $('play').setAttribute('aria-label', on ? 'Stop the sample round' : 'Start the sample round');
+    $('playIcon').innerHTML = on ? '<path d="M6 5h4v14H6zM14 5h4v14h-4z"/>' : '<path d="M7 4.5v15l13-7.5z"/>';
+    $('heroPlay').textContent = on ? 'Stop the round' : 'Hear a round';
   }
   function tick() {
     left -= 1;
-    if (left < 0) return enter((phase + 1) % PHASES.length);
-    time.textContent = fmt(left);
-    if (PHASES[phase].name === 'FIGHT') {
-      setPhaseColor(left <= 10 ? 'var(--red)' : 'var(--fight)');
-      if (++sinceCall >= CALL_EVERY && left > 1) { sinceCall = 0; nextCombo(); }
+    if (!fighting) {
+      if (left > 0) { time.textContent = fmt(left); return; }
+      fighting = true; left = FIGHT;
+      phaseEl.textContent = 'FIGHT'; setPhaseColor('var(--fight)');
+      $('bellStart').play().catch(() => {});
     }
+    if (left < 0) return finish();
+    time.textContent = fmt(left);
+    if (left <= WARN) setPhaseColor('var(--red)');
+    const i = CALL_AT.indexOf(left);
+    if (i >= 0) showCombo(COMBOS[style][i], true);
   }
   function start() {
-    running = true; enter(0);
+    running = true; fighting = false; left = PREP;
+    phaseEl.textContent = 'GET SET'; setPhaseColor('var(--prep)');
+    time.textContent = fmt(left);
+    $('callNum').textContent = 'Hands up';
+    $('callSaid').textContent = 'Your coach calls two combos: one Beginner, one Pro.';
     timer = setInterval(tick, 1000);
-    $('play').setAttribute('aria-label', 'Stop the sample round');
-    $('playIcon').innerHTML = '<path d="M6 5h4v14H6zM14 5h4v14h-4z"/>';
-    $('heroPlay').textContent = 'Stop the round';
+    setButtons(true);
   }
-  function stop() {
-    running = false; clearInterval(timer); voice.pause();
+  function halt() {
+    running = false; fighting = false; clearInterval(timer);
+    setButtons(false);
+  }
+  function finish() {
+    halt();
+    $('bellEnd').play().catch(() => {});
+    phaseEl.textContent = 'TIME'; setPhaseColor('var(--rest)');
+    time.textContent = fmt(0);
+    $('callNum').textContent = 'That was 15 seconds.';
+    $('callSaid').textContent = 'The app runs full rounds with 108 combos across 5 levels.';
+  }
+  function reset() {
+    halt(); voice.pause();
     phaseEl.textContent = 'READY'; setPhaseColor('var(--fight)');
-    time.textContent = fmt(PHASES[1].secs);
-    $('play').setAttribute('aria-label', 'Start the sample round');
-    $('playIcon').innerHTML = '<path d="M7 4.5v15l13-7.5z"/>';
-    $('heroPlay').textContent = 'Hear a round';
+    time.textContent = fmt(FIGHT);
+    showCombo(COMBOS[style][0], false);
   }
-  const toggle = () => (running ? stop() : start());
+  const toggle = () => (running ? reset() : start());
   $('play').addEventListener('click', toggle);
   $('heroPlay').addEventListener('click', () => {
     if (!running) clock.scrollIntoView({ behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'center' });
     toggle();
   });
   document.querySelectorAll('.seg button').forEach((b) => b.addEventListener('click', () => {
-    style = b.dataset.style; deck = [];
+    style = b.dataset.style;
     document.querySelectorAll('.seg button').forEach((o) => o.setAttribute('aria-pressed', String(o === b)));
-    const first = COMBOS[style][0];
-    showCombo(first, running && PHASES[phase].name === 'FIGHT');
+    reset();
   }));
+  reset();
 
   // Whiteboard reader: a small copy of the app's shorthand parser (src/data/shorthand.ts).
   const MOVES = {
