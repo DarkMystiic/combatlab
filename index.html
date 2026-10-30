@@ -53,24 +53,26 @@
 
   /* hero */
   .hero { padding: 72px 0 96px; }
-  .hero .wrap { display: grid; grid-template-columns: 1fr 1.05fr; gap: 56px; align-items: center; }
-  h1 { font-size: clamp(60px, 8vw, 108px); margin: 0 0 24px; text-transform: uppercase; }
+  .hero .wrap { display: grid; grid-template-columns: 1fr 1.15fr; gap: 56px; align-items: center; }
+  .nw { white-space: nowrap; }
+  h1 { font-size: clamp(56px, 7.4vw, 104px); margin: 0 0 24px; text-transform: uppercase; }
   .lede { font-size: 20px; color: #C9CED8; max-width: 30em; margin: 0 0 32px; }
   .ctas { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; }
   .soon { margin: 22px 0 0; font-size: 14px; color: var(--muted); }
 
   /* the round clock */
-  .clock { position: relative; background: var(--canvas); border: 1px solid var(--rope); border-radius: 28px; padding: 26px 28px 28px; overflow: hidden; }
+  .clock { position: relative; background: radial-gradient(120% 70% at 30% 0%, color-mix(in srgb, var(--phase) 14%, transparent), transparent 60%), var(--canvas); border: 1px solid var(--rope); border-radius: 28px; padding: 28px 32px 30px; overflow: hidden; transition: background .4s; }
   .clock::before { content: ""; position: absolute; inset: 0 0 auto; height: 6px; background: var(--phase); transition: background .4s; }
   .clock-top { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
   .seg { display: inline-flex; background: var(--ring); border-radius: 999px; padding: 4px; }
   .seg button { border: 0; background: none; color: var(--muted); font: 600 14px var(--body); padding: 8px 16px; border-radius: 999px; cursor: pointer; }
   .seg button[aria-pressed="true"] { background: var(--canvas2); color: var(--bone); }
   .phase { font: 800 18px var(--display); letter-spacing: 1px; color: var(--phase); transition: color .4s; }
-  .time { font-size: clamp(96px, 13vw, 168px); color: var(--phase); margin: 18px 0 6px; font-variant-numeric: tabular-nums; transition: color .4s; }
+  .time { font-size: clamp(110px, 15vw, 210px); color: var(--phase); margin: 18px 0 6px; font-variant-numeric: tabular-nums; transition: color .4s; }
   .call { min-height: 128px; border-top: 1px solid var(--rope); padding-top: 18px; }
   .call-num { font-size: clamp(44px, 5.5vw, 64px); }
   .call-said { margin: 8px 0 0; color: var(--muted); font-size: 16px; }
+  .call-num { transform-origin: left center; }
   .call.hit .call-num { animation: hit .35s ease-out; }
   @keyframes hit { from { transform: scale(1.12); color: var(--phase); } to { transform: none; } }
   .clock-foot { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-top: 18px; }
@@ -112,7 +114,8 @@
   .rules { margin: 48px 0 0; color: var(--muted); max-width: 44em; }
 
   /* builder */
-  .builder { display: grid; grid-template-columns: 1fr 1fr; gap: 56px; align-items: start; }
+  .builder { display: grid; grid-template-columns: 1fr 1fr; gap: 56px; align-items: end; }
+  .readout { background: var(--canvas); border: 1px solid var(--rope); border-radius: 22px; padding: 28px; min-height: 236px; }
   .board { background: #EDEFF2; color: #15181F; border-radius: 22px; padding: 28px; box-shadow: inset 0 0 0 10px #D5D9E0; }
   .board label { display: block; font: 600 14px var(--body); color: #4B5466; margin-bottom: 8px; }
   .board input { width: 100%; border: 0; border-bottom: 3px solid #15181F; background: transparent; font: italic 900 52px/1.1 var(--display); color: #15181F; padding: 4px 0; }
@@ -131,7 +134,9 @@
   .gym { display: grid; grid-template-columns: 1.15fr 1fr; gap: 56px; align-items: center; }
   .tv { background: #000; border: 12px solid #1C2029; border-radius: 18px; aspect-ratio: 16 / 9; padding: 5%; display: grid; grid-template-rows: auto 1fr auto; }
   .tv-head { display: flex; justify-content: space-between; font: 800 clamp(14px, 1.8vw, 20px) var(--display); color: var(--muted); letter-spacing: 1px; }
-  .tv-time { font-size: clamp(64px, 11vw, 140px); color: var(--fight); align-self: center; }
+  .tv-mid { display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+  .tv-time { font-size: clamp(56px, 9vw, 124px); color: var(--fight); }
+  .tv-call { font-size: clamp(22px, 3.2vw, 44px); text-align: right; }
   .tv-stations { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
   .tv-stations div { border-radius: 8px; padding: 8px 10px; background: #12151B; font: 800 clamp(12px, 1.5vw, 17px) var(--display); }
   .tv-stations div.now { background: var(--fight); color: #000; }
@@ -146,11 +151,12 @@
   thead th { font-weight: 600; color: var(--muted); font-size: 14px; }
   thead th .plan { display: block; font: italic 900 30px var(--display); color: var(--bone); margin-bottom: 4px; }
   thead th .price { display: block; font-size: 17px; color: var(--bone); }
-  thead th.pro { background: var(--canvas); border-radius: 16px 16px 0 0; }
+  thead th.pro { background: var(--canvas); border-radius: 16px 16px 0 0; box-shadow: inset 0 4px 0 var(--amber); }
   td.pro { background: var(--canvas); }
   tbody th { font-weight: 500; color: #C9CED8; }
   td { color: var(--muted); }
-  td.yes { color: var(--fight); font-weight: 700; }
+  td.yes { color: var(--bone); font-weight: 600; }
+  td.yes::before { content: "✓"; color: var(--fight); font-weight: 800; margin-right: 8px; }
   .fine { font-size: 14px; color: var(--dim); margin: 20px 0 0; }
 
   /* footer */
@@ -206,7 +212,7 @@
   <header class="hero">
     <div class="wrap">
       <div>
-        <h1 class="shout">Stop throwing the same 1-2.</h1>
+        <h1 class="shout">Stop throwing the same <span class="nw">1-2.</span></h1>
         <p class="lede">CombatLab is a coach in your phone that calls real Boxing and Muay Thai combinations through every round. Put it on, hit the bag, follow the voice.</p>
         <div class="ctas">
           <button class="btn hot" type="button" id="heroPlay">Hear a round</button>
@@ -302,7 +308,7 @@
           </div>
         </div>
       </div>
-      <div>
+      <div class="readout" aria-live="polite">
         <p class="heard">CombatLab reads</p>
         <div class="chips" id="chips"></div>
         <p class="says" id="says"></p>
@@ -315,7 +321,7 @@
     <div class="wrap gym">
       <div class="tv" aria-label="Class Mode on a gym TV">
         <div class="tv-head"><span>ROUND 2 OF 6</span><span>STATION ROTATION</span></div>
-        <div class="tv-time shout">2:14</div>
+        <div class="tv-mid"><div class="tv-time shout">2:14</div><div class="tv-call shout">1-2, knee</div></div>
         <div class="tv-stations">
           <div class="now">Heavy bag</div><div>Pads</div><div>Skip rope</div><div>Core</div>
         </div>
